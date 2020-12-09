@@ -201,6 +201,30 @@ function user_code.collect_messages()
    end
    table.insert(user_code.tx_as_target, robot.childstate)  --internal configuration
 end
+-- check if its branch has been completed
+function user_code.check_is_completed(tx_as_target)
+    length = #robot.branch_data
+    if #tx_as_target == length then 
+       is_completed = true
+       for index = 1, length  do
+          is_completed =  is_completed and (robot.branch_data[index] == tx_as_target[length + 1 - index])
+       end
+    end
+    return is_completed
+end
+--check which side is expecting with a new childblock
+function user_code.check_expected_child()
+    for index = 1, #robot.branch_data do
+        if bit32.band(robot.branch_data[index], bit32.lshift(1, 0)) ~= 0 then    --1 points to the right
+            robot.child_expected = 0
+            break
+        end
+        if bit32.band(robot.branch_data[index], bit32.lshift(1, 2)) ~= 0 then --2 points to the left 
+            robot.child_expected = 2
+            break
+        end
+    end
+end
 
 -- init method --
 function user_code.init()
@@ -241,7 +265,7 @@ function user_code.step(time)
             if identifier == "bottom" or identifier == "up" then
                robot.blockstate = "Idle"
                radio.parent = false
-               robot.directional_leds.set_all_colors("green")
+               --robot.directional_leds.set_all_colors("green")
             else
                radio.parent = true
                robot.blockstate = "Query"
@@ -251,28 +275,34 @@ function user_code.step(time)
             end
          end
       else
-         robot.directional_leds.set_all_colors("green")
-         user_code.collect_messages()
-         user_code.allocate_branch()
-         if radio.parent == false and robot.isroot == false then
+        is_completed = user_code.check_is_completed(user_code.tx_as_target)        
+        face_index = user_code.check_expected_child()
+        if robot.child_expected == 2  then
+            if is_completed == false then
+                robot.directional_leds.set_all_colors("green")
+            else
+                robot.directional_leds.set_all_colors("blue")
+            end 
+        else
+            if is_completed == false then
+                robot.directional_leds.set_all_colors("blue")
+            else
+                robot.directional_leds.set_all_colors("green")
+            end
+        end
+        user_code.collect_messages()
+        user_code.allocate_branch()
+        if radio.parent == false then
             radio.initiator_policy = "once"
-         end
-         if robot.isroot == true then
-            radio.initiator_policy = "once"
-         end
+        end
       end
    end
    if robot.isroot == true then
       --check if the structure is completed--
-      length = #robot.branch_data
-      if #user_code.tx_as_target == length then 
-         iscompleted = true
-         for index = 1, length  do
-            iscompleted =  iscompleted and (robot.branch_data[index] == user_code.tx_as_target[length + 1 - index])
-         end
-      end
-      if iscompleted == true then
-         user_code.extend_tree()
+      robot.directional_leds.set_all_colors("red")
+      is_completed = user_code.check_is_completed(user_code.tx_as_target)
+      if is_completed == true then
+        user_code.extend_tree()
       end
    end
 end

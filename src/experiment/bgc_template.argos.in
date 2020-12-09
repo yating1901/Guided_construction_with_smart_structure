@@ -58,8 +58,8 @@
                   output_directory=".">
     <condition type = "any" once = "true">
       <condition type = "all">
-        <condition type="entity" target="block:" position="-0.16,0.3,0.055" threshold="0.035"/>
-        <condition type="entity" target="block:" position="0.11,0.3,0.055" threshold="0.035"/>
+        <condition type="entity" target="block:" position="-0.16,0.055,0.0" threshold="0.035"/>
+        <condition type="entity" target="block:" position="0.165,0.055,0.0" threshold="0.035"/>
       </condition>
       <action type="terminate" delay="50"/>
     </condition>
@@ -113,7 +113,7 @@
     <distribute>
      <position method="uniform" min="-0.1,-0.4,0" max="0.1,-0.3,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="1" max_trials="100">
+      <entity quantity="2" max_trials="100">
         <block id="freeblock1" debug="false">
           <body position="-0,0,0" orientation="0,0,0"/>
           <controller config="block"/>
@@ -123,7 +123,7 @@
     <distribute>
      <position method="uniform" min="-0.1,0.3,0" max="0.1,0.4,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="1" max_trials="100">
+      <entity quantity="2" max_trials="100">
         <block id="freeblock2" debug="false">
           <body position="-0,0,0" orientation="0,0,0"/>
           <controller config="block"/>
@@ -177,7 +177,7 @@
   <!-- * Visualization * -->
   <!-- ****************** -->
   <visualization>
-    <qt-opengl lua_editor="false" show_boundary="false">
+    <qt-opengl lua_editor="true" show_boundary="false">
       <user_functions library="@CMAKE_BINARY_DIR@/libbuilderbot_qtopengl_user_functions"
                       label="builderbot_qtopengl_user_functions" />
     </qt-opengl>
