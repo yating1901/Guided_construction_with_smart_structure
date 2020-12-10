@@ -36,10 +36,18 @@ user_code.set_face_color = function(face, color)
 end
 --extend tree--
 function user_code.extend_tree()
-   --robot.directional_leds.set_all_colors("blue")
-   robot.branch_data = {15,2,0,2,0,2,0,2,0}
-   --print("#robot.branch_data", length)
-   --print("#user_code.tx_as_target", #user_code.tx_as_target)
+--robot.branch_data = {5,2,2,1,2,0,2,2,4,2,0}
+    local update_tree = {}
+    local length = #robot.branch_data
+    if #user_code.tx_as_target ==  #robot.branch_data then 
+        for index = 1, length do 
+            if robot.branch_data[index] == 0 then
+            table.insert(update_tree, 2)
+            end
+            table.insert(update_tree,robot.branch_data[index])
+        end
+        robot.branch_data = update_tree
+    end   
 end
 --define tree structure--
 user_code.tree={5,2,2,1,0,2,2,4,0}
@@ -201,17 +209,7 @@ function user_code.collect_messages()
    end
    table.insert(user_code.tx_as_target, robot.childstate)  --internal configuration
 end
--- check if its branch has been completed
-function user_code.check_is_completed(tx_as_target)
-    length = #robot.branch_data
-    if #tx_as_target == length then 
-       is_completed = true
-       for index = 1, length  do
-          is_completed =  is_completed and (robot.branch_data[index] == tx_as_target[length + 1 - index])
-       end
-    end
-    return is_completed
-end
+
 --check which side is expecting with a new childblock
 function user_code.check_expected_child()
     for index = 1, #robot.branch_data do
@@ -275,7 +273,16 @@ function user_code.step(time)
             end
          end
       else
-        is_completed = user_code.check_is_completed(user_code.tx_as_target)        
+        --data_received = user_code.tx_as_target
+        --is_completed = user_code.check_is_completed(data_received)        
+        length = #robot.branch_data
+        is_completed = false
+        if #user_code.tx_as_target == length then 
+            is_completed = true
+            for index = 1, length  do
+                is_completed =  is_completed and (robot.branch_data[index] == user_code.tx_as_target[length + 1 - index])
+            end
+        end
         face_index = user_code.check_expected_child()
         if robot.child_expected == 2  then
             if is_completed == false then
@@ -299,8 +306,8 @@ function user_code.step(time)
    end
    if robot.isroot == true then
       --check if the structure is completed--
-      robot.directional_leds.set_all_colors("red")
-      is_completed = user_code.check_is_completed(user_code.tx_as_target)
+      robot.directional_leds.set_all_colors("orange")
+      --is_completed = user_code.check_is_completed(user_code.tx_as_target)
       if is_completed == true then
         user_code.extend_tree()
       end

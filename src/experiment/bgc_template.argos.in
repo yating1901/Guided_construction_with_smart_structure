@@ -57,11 +57,39 @@
                   label="di_srocs_loop_functions"
                   output_directory=".">
     <condition type = "any" once = "true">
+      <condition type="entity" target="block:" position="-0.16,0.055,0.0" threshold="0.035"/>
+      <condition type="entity" target="block:" position="0.165,0.055,0.0" threshold="0.035"/>
+      <action type="add_timer" id="timer1"/>
+    </condition>
+    <condition type="timer" id="timer1" value="5">
+      <action type="add_entity" delay="5">
+        <block id="freeblock1" init_led_color="black">
+          <body position="0.0,0.3,0.0" orientation="0,0,0"/>
+          <controller config="block"/>
+        </block>
+      </action>
+    </condition>
+    <condition type = "any" once = "true">
       <condition type = "all">
         <condition type="entity" target="block:" position="-0.16,0.055,0.0" threshold="0.035"/>
         <condition type="entity" target="block:" position="0.165,0.055,0.0" threshold="0.035"/>
       </condition>
-      <action type="terminate" delay="50"/>
+      <action type="add_timer" id="timer2"/>
+    </condition>
+    <condition type="timer" id="timer2" value="5">
+      <action type="add_entity" delay="5">
+        <block id="freeblock2" init_led_color="black">
+          <body position="0.0,0.3,0.0" orientation="0,0,0"/>
+          <controller config="block"/>
+        </block>
+      </action>
+    </condition>
+    <condition type = "any" once = "true">
+      <condition type = "all">
+        <condition type="entity" target="block:" position="-0.16,0.11,0.0" threshold="0.035"/>
+        <condition type="entity" target="block:" position="0.165,0.11,0.0" threshold="0.035"/>
+      </condition>
+      <action type="terminate" delay="100"/>
     </condition>
   </loop_functions>
 
@@ -113,7 +141,7 @@
     <distribute>
      <position method="uniform" min="-0.1,-0.4,0" max="0.1,-0.3,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="2" max_trials="100">
+      <entity quantity="1" max_trials="100">
         <block id="freeblock1" debug="false">
           <body position="-0,0,0" orientation="0,0,0"/>
           <controller config="block"/>
@@ -121,9 +149,9 @@
       </entity>
     </distribute>
     <distribute>
-     <position method="uniform" min="-0.1,0.3,0" max="0.1,0.4,0" />
+     <position method="uniform" min="-0.1,0.3,0" max="0.0,0.4,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="2" max_trials="100">
+      <entity quantity="1" max_trials="100">
         <block id="freeblock2" debug="false">
           <body position="-0,0,0" orientation="0,0,0"/>
           <controller config="block"/>
