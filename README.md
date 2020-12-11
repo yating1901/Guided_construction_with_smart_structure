@@ -1,5 +1,5 @@
 # block-guided-construction
-# short structure with 6 blocks, assembled by one builderboi, with inert blocks or smart blocks.
+# short structure with 7 blocks, assembled by one builderboi, with smart blocks.
 1. This project requires the latest versions of argos3 and argos3-srocs to be installed
 2. To build this repository, run:
 ```bash
